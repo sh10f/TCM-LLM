@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="xh" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="xh">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/llm/Fine-tuning/TCM" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/chatLLM" />
+            <excludedPath path="/llm/Fine-tuning/TCM/chatLLM" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

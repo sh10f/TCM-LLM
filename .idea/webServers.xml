@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="eecbf67d-4bb5-4ff4-b201-7e218ad93f80" name="xh">
+        <fileTransfer rootFolder="/home/zhangxiaohong/yangjunzhe/temp_F/" accessType="SFTP" host="192.168.3.86" port="22" sshConfigId="5b9170fb-a477-4b03-b16b-4978effc2a06" sshConfig="yangjunzhe@192.168.3.86:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
