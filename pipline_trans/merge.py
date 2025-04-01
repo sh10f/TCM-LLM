@@ -36,6 +36,6 @@ def merge_json_files(input_dir, output_file):
 
 
 if __name__ == '__main__':
-    input_dir = "./A_test"
+    input_dir = "../dataset/pred"
     output_file = "test_predictions.json"
     merge_json_files(input_dir, output_file)

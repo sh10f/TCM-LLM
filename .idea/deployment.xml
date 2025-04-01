@@ -10,6 +10,8 @@
           <excludedPaths>
             <excludedPath local="true" path="$PROJECT_DIR$/chatLLM" />
             <excludedPath path="/llm/Fine-tuning/TCM/chatLLM" />
+            <excludedPath local="true" path="$PROJECT_DIR$/dataset" />
+            <excludedPath path="/llm/Fine-tuning/TCM/dataset" />
           </excludedPaths>
         </serverdata>
       </paths>

@@ -31,7 +31,12 @@ def get_api_key(filename: str, start_num: int, end_num: int) -> List[str]:
     
     return api_key_list
 
-
+def extract_answer_label(text):
+    # 使用正则表达式查找“【答案】”后面的第一个0或2
+    match = re.search(r'【答案】.*?([02])', text)
+    if match:
+        return match.group(1)
+    return None
 def extract_choice_answer(model_output, question_type, answer_lenth=None):
     """
     Extract choice answer from model output
@@ -128,6 +133,57 @@ def pattern_second_check(ans_list, model_output):
         check_answer.append(chr(ans_id + 65))
     return check_answer
 
+
+def choice_test_NLI(**kwargs):
+    model_api = kwargs['model_api']
+    model_name = kwargs['model_name']
+    start_num = kwargs['start_num']
+    end_num = kwargs['end_num']
+    data = kwargs['data']['example']
+    keyword = kwargs['keyword']
+    prompt = kwargs['prompt']
+    question_type = kwargs['question_type']
+    save_directory = kwargs['save_directory']
+    args = kwargs['args']
+
+    model_answer_dict = []
+    Acc = 0
+    for i in range(start_num, end_num):
+        index = data[i]['idx']
+        premise = data[i]['premise']
+        hypothesis = data[i]['hypothesis']
+        model_output = model_api.send_request_NLI(prompt, premise, hypothesis)
+        model_answer = extract_answer_label(model_output)
+
+        # TODO: which content of temp we expect
+        dict = {
+            'idx': index,
+            'premise': premise,
+            'hypothesis': model_answer,
+            'label': model_output
+        }
+        for key, value in dict.items():
+            print(key, ":", value)
+        print("Correct label:", data[i]['label'])
+
+        if data[i]['label'] == dict['label']:
+            Acc += 1
+        # print(dict)
+        print("*" * 100, "index-", dict["idx"], "*" * 100)
+        model_answer_dict.append(dict)
+
+    print("Accracy: ", Acc / (end_num - start_num), "\n")
+    print(Acc, " === ", (end_num - start_num))
+    file_name = f"seperate_{start_num}-{end_num}.json"
+    file_path = os.path.join(save_directory, file_name)
+    with open(file_path, 'w', encoding='utf-8') as f:
+        output = {
+            'keyword': keyword,
+            'example': model_answer_dict
+        }
+        json.dump(output, f, ensure_ascii=False, indent=4)
+        f.close()
+
 def choice_test_A12(**kwargs):
     model_api = kwargs['model_api']
     model_name = kwargs['model_name']
@@ -193,8 +249,11 @@ def choice_test_A34(**kwargs):
     args = kwargs['args']
 
     model_answer_dict = []
+    ACC = 0
+    Total = 0
     for i in range(start_num, end_num):
         index = data[i]['index']
+        print("*" * 100, "index-", index, "*" * 100)
         question = data[i]['question']    # list() 包含多个小问题和答案
         share_content = data[i]['share_content']
         model_output = model_api.send_request_chat(prompt, share_content, question, question_type)
@@ -215,6 +274,9 @@ def choice_test_A34(**kwargs):
                 'answer': model_answer,
                 'analysis': output
             }
+            Total += 1
+            if(model_answer == sub_question["answer"]):
+                ACC += 1
             question_list.append(sub_question_dict)
         # TODO: which content of temp we expect
 
@@ -225,6 +287,19 @@ def choice_test_A34(**kwargs):
         }
         model_answer_dict.append(dict)
 
+        if i % 100 == 0:
+            file_path = "../dataset/A_test/temp.json"
+            with open(file_path, 'a', encoding='utf-8') as f:
+                output = {
+                    'keyword': keyword,
+                    'example': model_answer_dict[-100:]
+                }
+                json.dump(output, f, ensure_ascii=False, indent=4)
+                f.close()
+                print(f"=== saved ==={i}")
+
+    print(ACC, " === ", Total)
+    print("Accracy === ", ACC/Total)
     file_name = f"_seperate_{start_num}-{end_num}.json"
     file_path = os.path.join(save_directory, file_name)
     with open(file_path, 'w', encoding='utf-8') as f:
@@ -340,5 +415,8 @@ def export_distribute_json(
     elif question_type in ["A3+A4", "B1"]:
         for kwargs in kwargs_list:
            choice_test_A34(**kwargs)
+    elif question_type in ["NLI"]:
+        for kwargs in kwargs_list:
+            choice_test_NLI(**kwargs)
 
     

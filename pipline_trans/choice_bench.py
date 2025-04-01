@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 parent_path = os.path.dirname(sys.path[0])
 print(parent_path)
 if parent_path not in sys.path:
@@ -51,10 +52,11 @@ if __name__ == "__main__":
 
     args = parse_args()
     args.model_name = '../chatLLM/Qwen2.5-7B'
+    args.sys_prompt = 'A1-2_prompt.json'
     # args.model_name = '../chatLLM/DeepSeek-R1-8B'  #'deepseek-ai/DeepSeek-R1-Distill-Llama-8B'
     # args.model_name = 'Qwen/Qwen2.5-1.5B-Instruct'
-    args.peer_name = "../chatLLM/Qwen2.5-1.5B"
-    args.data_path = "../dataset/A_valid/"
+    args.peer_name = '../chatLLM/Qwen2.5-7B' #"../chatLLM/Qwen2.5-1.5B"
+    args.data_path = "../dataset/B_test/"
 
     with open(f"{args.sys_prompt}", "r", encoding="utf-8") as f:
         data = json.load(f)['examples']
@@ -68,7 +70,7 @@ if __name__ == "__main__":
             print("model_name", model_name)
             api = API("", model_name=model_name, peer_name=peer_name,
                       cache_dir=model_name, peer_dir=peer_name)
-        data[i]['keyword'] = "evaluate_A12"
+        data[i]['keyword'] = "test_A12"
         keyword = data[i]['keyword']
         question_type = data[i]['type']
         zero_shot_prompt_text = data[i]['prefix_prompt']
